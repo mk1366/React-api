@@ -16,7 +16,7 @@ const token = crypto.randomBytes(16).toString('hex')
 let userId
 let exampleId
 
-describe('Examples', () => {
+describe('phones', () => {
   const exampleParams = {
     title: '13 JavaScript tricks WDI instructors don\'t want you to know',
     text: 'You won\'believe number 8!'
@@ -41,24 +41,24 @@ describe('Examples', () => {
       .catch(console.error)
   })
 
-  describe('GET /examples', () => {
-    it('should get all the examples', done => {
+  describe('GET /phones', () => {
+    it('should get all the phones', done => {
       chai.request(server)
-        .get('/examples')
+        .get('/phones')
         .set('Authorization', `Token token=${token}`)
         .end((e, res) => {
           res.should.have.status(200)
-          res.body.examples.should.be.a('array')
-          res.body.examples.length.should.be.eql(1)
+          res.body.phones.should.be.a('array')
+          res.body.phones.length.should.be.eql(1)
           done()
         })
     })
   })
 
-  describe('GET /examples/:id', () => {
+  describe('GET /phones/:id', () => {
     it('should get one example', done => {
       chai.request(server)
-        .get('/examples/' + exampleId)
+        .get('/phones/' + exampleId)
         .set('Authorization', `Token token=${token}`)
         .end((e, res) => {
           res.should.have.status(200)
@@ -69,7 +69,7 @@ describe('Examples', () => {
     })
   })
 
-  describe('DELETE /examples/:id', () => {
+  describe('DELETE /phones/:id', () => {
     let exampleId
 
     before(done => {
@@ -83,7 +83,7 @@ describe('Examples', () => {
 
     it('must be owned by the user', done => {
       chai.request(server)
-        .delete('/examples/' + exampleId)
+        .delete('/phones/' + exampleId)
         .set('Authorization', `Bearer notarealtoken`)
         .end((e, res) => {
           res.should.have.status(401)
@@ -93,7 +93,7 @@ describe('Examples', () => {
 
     it('should be succesful if you own the resource', done => {
       chai.request(server)
-        .delete('/examples/' + exampleId)
+        .delete('/phones/' + exampleId)
         .set('Authorization', `Bearer ${token}`)
         .end((e, res) => {
           res.should.have.status(204)
@@ -103,7 +103,7 @@ describe('Examples', () => {
 
     it('should return 404 if the resource doesn\'t exist', done => {
       chai.request(server)
-        .delete('/examples/' + exampleId)
+        .delete('/phones/' + exampleId)
         .set('Authorization', `Bearer ${token}`)
         .end((e, res) => {
           res.should.have.status(404)
@@ -112,14 +112,14 @@ describe('Examples', () => {
     })
   })
 
-  describe('POST /examples', () => {
+  describe('POST /phones', () => {
     it('should not POST an example without a title', done => {
       let noTitle = {
         text: 'Untitled',
         owner: 'fakedID'
       }
       chai.request(server)
-        .post('/examples')
+        .post('/phones')
         .set('Authorization', `Bearer ${token}`)
         .send({ example: noTitle })
         .end((e, res) => {
@@ -135,7 +135,7 @@ describe('Examples', () => {
         owner: 'fakeID'
       }
       chai.request(server)
-        .post('/examples')
+        .post('/phones')
         .set('Authorization', `Bearer ${token}`)
         .send({ example: noText })
         .end((e, res) => {
@@ -147,7 +147,7 @@ describe('Examples', () => {
 
     it('should not allow a POST from an unauthenticated user', done => {
       chai.request(server)
-        .post('/examples')
+        .post('/phones')
         .send({ example: exampleParams })
         .end((e, res) => {
           res.should.have.status(401)
@@ -161,7 +161,7 @@ describe('Examples', () => {
         text: 'it was rm -rf / --no-preserve-root'
       }
       chai.request(server)
-        .post('/examples')
+        .post('/phones')
         .set('Authorization', `Bearer ${token}`)
         .send({ example: validExample })
         .end((e, res) => {
@@ -175,7 +175,7 @@ describe('Examples', () => {
     })
   })
 
-  describe('PATCH /examples/:id', () => {
+  describe('PATCH /phones/:id', () => {
     let exampleId
 
     const fields = {
@@ -190,7 +190,7 @@ describe('Examples', () => {
 
     it('must be owned by the user', done => {
       chai.request(server)
-        .patch('/examples/' + exampleId)
+        .patch('/phones/' + exampleId)
         .set('Authorization', `Bearer notarealtoken`)
         .send({ example: fields })
         .end((e, res) => {
@@ -201,7 +201,7 @@ describe('Examples', () => {
 
     it('should update fields when PATCHed', done => {
       chai.request(server)
-        .patch(`/examples/${exampleId}`)
+        .patch(`/phones/${exampleId}`)
         .set('Authorization', `Bearer ${token}`)
         .send({ example: fields })
         .end((e, res) => {
@@ -212,7 +212,7 @@ describe('Examples', () => {
 
     it('shows the updated resource when fetched with GET', done => {
       chai.request(server)
-        .get(`/examples/${exampleId}`)
+        .get(`/phones/${exampleId}`)
         .set('Authorization', `Bearer ${token}`)
         .end((e, res) => {
           res.should.have.status(200)
@@ -225,12 +225,12 @@ describe('Examples', () => {
 
     it('doesn\'t overwrite fields with empty strings', done => {
       chai.request(server)
-        .patch(`/examples/${exampleId}`)
+        .patch(`/phones/${exampleId}`)
         .set('Authorization', `Bearer ${token}`)
         .send({ example: { text: '' } })
         .then(() => {
           chai.request(server)
-            .get(`/examples/${exampleId}`)
+            .get(`/phones/${exampleId}`)
             .set('Authorization', `Bearer ${token}`)
             .end((e, res) => {
               res.should.have.status(200)
