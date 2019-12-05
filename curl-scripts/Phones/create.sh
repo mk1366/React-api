@@ -9,9 +9,12 @@ curl "${API}${URL_PATH}" \
   --header "Content-Type: application/json" \
   --header "Authorization: Bearer ${TOKEN}" \
   --data '{
-    "example": {
-      "text": "'"${TEXT}"'",
-      "title": "'"${TITLE}"'"
+    "phone": {
+      "model": "'"${MODEL}"'",
+      "state": "'"${STATE}"'",
+      "company": "'"${COMPANY}"'",
+      "description": "'"${DESCRIPTION}"'",
+      "price": "'"${PRICE}"'",
     }
   }'
 

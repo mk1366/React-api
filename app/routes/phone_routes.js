@@ -60,6 +60,7 @@ router.get('/phones/:id', requireToken, (req, res, next) => {
 router.post('/phones', requireToken, (req, res, next) => {
   // set owner of new phone to be current user
   req.body.phone.owner = req.user.id
+  console.log('crete phone',req.body.phone)
 
   Phone.create(req.body.phone)
     // respond to succesful `create` with status 201 and JSON of new "phone"
