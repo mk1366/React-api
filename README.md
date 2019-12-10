@@ -1,6 +1,6 @@
 # Phone Exchange: E-commerce React App
 
-This is a single page E-commerce application that allowes users to exchange electronics products with other users. Once the user registered with an email adress and passwored, they will have an access to upload the choice of thiers' electronics products with a listing of the items' name, model, state describtion and price. The user can create many resources and be able to see in their cart, update and delete. Users can only mangae thier own products and do not have an access to make a change on others' users products.
+This is a single page E-commerce application that allows users to exchange electronics products with other users. Once the user registered with an email adress and passwored, they will have an access to upload the choice of thiers' electronics products with a listing of the items' name, model, state describtion and price. The user can create many resources and be able to see in their cart, update and delete. Users can only mangae thier own products and do not have an access to make a change on others' users products.
 
 
 ## Link
