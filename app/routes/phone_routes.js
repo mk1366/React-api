@@ -6,6 +6,9 @@ const passport = require('passport')
 // pull in Mongoose model for phones
 const Phone = require('../models/phone')
 
+// pull in Mongoose model for images
+const image = require('../models/image')
+
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
 const customErrors = require('../../lib/custom_errors')
@@ -26,6 +29,12 @@ const requireToken = passport.authenticate('bearer', { session: false })
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
+
+// uploader for image require
+const uploadApi = require('../../lib/uploadApi')
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const multerUpload = multer({ storage: storage })
 
 // INDEX
 // GET /phones
@@ -48,6 +57,7 @@ router.get('/phones', requireToken, (req, res, next) => {
 router.get('/phones/:id', requireToken, (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
   Phone.findById(req.params.id)
+    .populate('image')
     .then(handle404)
     // if `findById` is succesful, respond with 200 and "phone" JSON
     .then(phone => res.status(200).json({ phone: phone.toObject() }))
@@ -57,14 +67,14 @@ router.get('/phones/:id', requireToken, (req, res, next) => {
 
 // CREATE
 // POST /phones
-router.post('/phones', requireToken, (req, res, next) => {
-  // set owner of new phone to be current user
+router.post('/phones', requireToken, multerUpload.single('file'), (req, res, next) => {
   req.body.phone.owner = req.user.id
   console.log('crete phone',req.body.phone)
 
   Phone.create(req.body.phone)
     // respond to succesful `create` with status 201 and JSON of new "phone"
     .then(phone => {
+      console.log('phone id is:', phone._id)
       res.status(201).json({ phone: phone.toObject() })
     })
     // if an error occurs, pass it off to our error handler
