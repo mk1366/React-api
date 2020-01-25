@@ -38,7 +38,7 @@ const multerUpload = multer({ storage: storage })
 
 // INDEX
 // GET /phones
-router.get('/phones', requireToken, (req, res, next) => {
+router.get('/phones', (req, res, next) => {
   Phone.find()
     .then(phones => {
       // `phones` will be an array of Mongoose documents
@@ -54,10 +54,9 @@ router.get('/phones', requireToken, (req, res, next) => {
 
 // SHOW
 // GET /phones/5a7db6c74d55bc51bdf39793
-router.get('/phones/:id', requireToken, (req, res, next) => {
+router.get('/phones/:id', (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
   Phone.findById(req.params.id)
-    .populate('image')
     .then(handle404)
     // if `findById` is succesful, respond with 200 and "phone" JSON
     .then(phone => res.status(200).json({ phone: phone.toObject() }))
@@ -67,7 +66,7 @@ router.get('/phones/:id', requireToken, (req, res, next) => {
 
 // CREATE
 // POST /phones
-router.post('/phones', requireToken, multerUpload.single('file'), (req, res, next) => {
+router.post('/phones', requireToken, (req, res, next) => {
   req.body.phone.owner = req.user.id
   console.log('crete phone',req.body.phone)
 
@@ -81,6 +80,29 @@ router.post('/phones', requireToken, multerUpload.single('file'), (req, res, nex
     // the error handler needs the error message and the `res` object so that it
     // can send an error message back to the client
     .catch(next)
+})
+
+// Add image to phone
+
+router.patch('/images/:phone_id', requireToken, multerUpload.single('file'), (req, res, next) => {
+  // set owner of new image to be current user
+  console.log('received', req.body)
+  console.log(req.body)
+  // req.body.image.owner = req.user.id
+  uploadApi(req.file, req.params.phone_id)
+    .then(awsResponse => {
+    // req.body.phone.image = awsResponse.Location
+    console.log(awsResponse)
+    console.log('phone id is:', req.params.phone_id)
+    Phone.findById(req.params.phone_id)
+      .then(phone => {
+        phone.image = ''
+        phone.image = awsResponse.Location
+        return phone.save()
+      })
+      .then(phone => res.status(201).json({ phone: phone.toObject() }))
+      .catch(next)
+    })
 })
 
 // UPDATE
